@@ -6,13 +6,14 @@ int** preencheMatriz(int linhas, int colunas, int** matriz);
 void mostraMatriz(int linhas, int colunas, int** matriz);
 int** alocaMatriz(int linhas, int colunas);
 int** multiplica(int linhas, int colunas, int **matriz_1, int **matriz_2, int **matriz_3);
-void* chamaThread(int *linhaParaMultiplicar, int** matriz_2, int linhas, int colunas);
+void* chamaThread(void* param);
 
-struct {
-	int *linhaParaMultiplicar;
+typedef struct {
+	int* linhaParaMultiplicar;
 	int** matriz_2;
 	int linhas;
 	int colunas;
+	int id;
 } threadParams;
 
 int main(int argc, char **argv) {
@@ -34,57 +35,65 @@ int main(int argc, char **argv) {
 	matriz_3 = alocaMatriz(linhas, colunas);
 	matriz_3 = multiplica(linhas, colunas, matriz, matriz_2, matriz_3);
 
-	printf(" = \n");
-
-	mostraMatriz(linhas, colunas, matriz_3);
-
 	return 0;
 }
 
 
 int** multiplica(int linhas, int colunas, int **matriz_1, int **matriz_2, int **matriz_3) {
 	int soma = 0;
-	pthread_t *thread;
+	pthread_t *threads;
+	threadParams *params;
 
-	for(int l=0; l<linhas; l++) {
-			int* linhaParaMultiplicar;
-			linhaParaMultiplicar = malloc(colunas * sizeof(int));
-
-			for(int j=0; j<colunas;j++) {
-				linhaParaMultiplicar[j] = matriz_1[l][j];
-			}
-			threadParams->linhaParaMultiplicar = linhaParaMultiplicar;
-			threadParams->matriz_2 = matriz_2;
-			threadParams->linhas = linhas;
-			threadParams->colunas = colunas;
-
-			pthread_create(&thread, NULL, chamaThread,(void*)threadParams);
-			chamaThread(linhaParaMultiplicar, matriz_2, linhas, colunas);
-	}
+	threads = malloc(linhas * sizeof(pthread_t));
+	params = malloc(linhas * sizeof(threadParams));
 
 	for(int i=0; i<linhas; i++) {
-		for(int j=0;j<colunas;j++) {
-			for(int k=0;k<colunas;k++) {
-				soma += matriz_1[i][k] * matriz_2[k][j];
-			}
-			matriz_3[i][j] = soma;
-			soma = 0;
-		}
+		int* linhaParaMultiplicar;
+		linhaParaMultiplicar = malloc(colunas * sizeof(int));
 
+		for(int j=0; j<colunas;j++) {
+			linhaParaMultiplicar[j] = matriz_1[i][j];
+		}
+		
+			
+		params[i].linhaParaMultiplicar = linhaParaMultiplicar;
+		params[i].matriz_2 = matriz_2;
+		params[i].linhas = linhas;
+		params[i].colunas = colunas;
+		params[i].id = i;
+
+		pthread_create(&threads[i], NULL, chamaThread,(void*)&params[i]);
+		//chamaThread((void*)&params);
 	}
 
-	return matriz_3;
+	for (int i = 0; i < linhas; i++){
+		pthread_join(threads[i], NULL);
+   	}
+
+	return NULL;
 }
 
-void* chamaThread(int *linhaParaMultiplicar, int** matriz_2, int linhas, int colunas){
-		int sum=0;
-		for(int i=0; i<colunas;i++) {
-			for(int j=0; j<linhas;j++) {
-				sum+= linhaParaMultiplicar[j] * matriz_2[j][i];
-			}
-			printf("%d\n", sum);
-			sum=0;
+void* chamaThread(void* param) {
+	threadParams *param_t;
+	param_t = (threadParams*)param;
+
+	printf("Thread: %d\n", param_t->id);
+
+	int* linhaParaMultiplicar = param_t->linhaParaMultiplicar;
+	int** matriz_2 = param_t->matriz_2;
+	int linhas = param_t->linhas;
+	int colunas = param_t->colunas;
+	int sum=0;
+
+	
+	for(int i=0; i<colunas;i++) {
+		for(int j=0; j<linhas;j++) {
+			sum+= linhaParaMultiplicar[j] * matriz_2[j][i];
 		}
+		printf("%d\n",sum);
+		sum=0;
+	}
+	return NULL;
 }
 
 int** alocaMatriz(int linhas, int colunas) {
@@ -101,7 +110,6 @@ int** alocaMatriz(int linhas, int colunas) {
 }
 
 int** preencheMatriz(int linhas, int colunas, int** matriz) {
-
 
 	for(int i=0;i<linhas;i++) {
 		for(int j=0; j<colunas; j++) {
