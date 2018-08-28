@@ -68,7 +68,7 @@ void multiplica(int linhas, int colunas, int colunas2, int **matriz_1, int **mat
 	int numThreads = 3;
 	customThread *customThreads;
 	
-	customThreads = malloc((linhas * colunas2) * sizeof(customThread));
+	customThreads = malloc(numThreads * sizeof(customThread));
 	
 	for(int i=0; i<linhas; i++) {
 
@@ -95,24 +95,11 @@ void multiplica(int linhas, int colunas, int colunas2, int **matriz_1, int **mat
 			params.colunaParaMultiplicar = colunaParaMultiplicar;
 			params.tam = colunas;
 
-			while(customThreads[count].disp) {
-				count++;
-				if(count > numThreads) {
-					count = 0;
-				}				
-			}
-
-			if(!customThreads[count].disp) {
-				customThreads[count].disp = true;
-				pthread_create(&customThreads[count].thread,NULL,executaThread,(void*) &params);
-			}
-			
-			if(pthread_join(customThreads[count].thread,NULL)) {
-				customThreads[count].disp = false;		
-			}
+			pthread_create(&customThreads[count].thread,NULL,executaThread,(void*) &params);	
+			pthread_join(customThreads[count].thread,NULL);
 
 			count++;
-			if(count > numThreads) {
+			if(count >= numThreads) {
 				count = 0;
 			}
 		}
@@ -127,10 +114,12 @@ void* executaThread(void* param) {
 	int* linhaParaMultiplicar = params->linhaParaMultiplicar;
 	int* colunaParaMultiplicar = params->colunaParaMultiplicar;
 	int tam = params->tam;
+	int sum=0;
 
 	for(int i=0;i<tam;i++) {
-		printf("%d * %d\n", linhaParaMultiplicar[i], colunaParaMultiplicar[i]);
+		sum+= linhaParaMultiplicar[i] * colunaParaMultiplicar[i];
 	}
+	printf("%d\n", sum);
 
 	return NULL;
 }
