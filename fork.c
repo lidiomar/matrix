@@ -1,12 +1,13 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <pthread.h>
+#include <unistd.h>
 
 int** preencheMatriz(int linhas, int colunas, int** matriz);
 void mostraMatriz(int linhas, int colunas, int** matriz);
 int** alocaMatriz(int linhas, int colunas);
 void multiplica(int linhas, int colunas, int colunas2, int **matriz_1, int **matriz_2);
-void* executaThread(void* param);
+void* executa(void* param, pid_t pid);
 
 typedef struct {
 	int id;
@@ -16,6 +17,7 @@ typedef struct {
 	int colunas2;
 	int* result;
 } threadParams;
+void bla(int i, threadParams *params, int **matriz_1, int **matriz_2, int colunas, int colunas2,pid_t pid);
 
 int main(int argc, char **argv) {
 
@@ -66,46 +68,42 @@ void multiplica(int linhas, int colunas, int colunas2, int **matriz_1, int **mat
 	int soma = 0;
 	pthread_t *threads;
 	threadParams *params;
+	int aux;
+	pid_t pid;
 
 	threads = malloc(linhas * sizeof(pthread_t));
 	params = malloc(linhas * sizeof(threadParams));
 
+	pid = fork();
+
 	for(int i=0; i<linhas; i++) {
-		int* linhaParaMultiplicar;
-		linhaParaMultiplicar = malloc(colunas * sizeof(int));
-
-		for(int j=0; j<colunas;j++) {
-			linhaParaMultiplicar[j] = matriz_1[i][j];
+		if(i%2 == 0 && pid != 0) {		
+			bla(i, params,matriz_1, matriz_2, colunas, colunas2, pid);
+		}else if(i%2 != 0 && pid == 0) {
+			bla(i, params,matriz_1, matriz_2, colunas, colunas2, pid);
 		}
-			
-		params[i].linhaParaMultiplicar = linhaParaMultiplicar;
-		params[i].matriz_2 = matriz_2;
-		params[i].colunas = colunas;
-		params[i].colunas2 = colunas2;
-		params[i].id = i;
-
-		pthread_create(&threads[i], NULL, executaThread,(void*)&params[i]);
-	}
-	
-	for (int i = 0; i < linhas; i++){
-		pthread_join(threads[i], NULL);
 		
-		for(int j=0;j<colunas2;j++) {
-			if(j == 0) {
-				printf("|");
-			}
-			if(params[i].result[j] < 10)
-				printf("  %d |", params[i].result[j]);
-			else {
-				printf(" %d |", params[i].result[j]);
-			}
-		}
-		printf("\n");
-   	}
+	}
 
 }
 
-void* executaThread(void* param) {
+void bla(int i, threadParams *params, int **matriz_1, int **matriz_2, int colunas, int colunas2,pid_t pid) {
+	int* linhaParaMultiplicar;
+	linhaParaMultiplicar = malloc(colunas * sizeof(int));
+
+	for(int j=0; j<colunas;j++) {
+		linhaParaMultiplicar[j] = matriz_1[i][j];
+	}
+		
+	params[i].linhaParaMultiplicar = linhaParaMultiplicar;
+	params[i].matriz_2 = matriz_2;
+	params[i].colunas = colunas;
+	params[i].colunas2 = colunas2;
+	params[i].id = i;
+	executa((void*)&params[i], pid);
+}
+
+void* executa(void* param, pid_t pid) {
 	threadParams *param_t;
 	param_t = (threadParams*)param;
 	int* linhaParaMultiplicar = param_t->linhaParaMultiplicar;
@@ -120,7 +118,7 @@ void* executaThread(void* param) {
 		for(int j=0; j<colunas; j++){
 			sum+= linhaParaMultiplicar[j] * matriz_2[j][i];
 		}
-		param_t->result[i] = sum;
+		printf("PID: %d VALOR: %d\n", pid, sum);
 		sum=0;
 	}
 
