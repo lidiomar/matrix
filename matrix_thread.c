@@ -148,7 +148,7 @@ int** preencheMatriz(int linhas, int colunas, int** matriz) {
 		}
 	}
 
-	return matriz;
+	return 0;
 }
 
 void mostraMatriz(int linhas, int colunas, int** matriz) {
