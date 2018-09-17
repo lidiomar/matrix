@@ -2,10 +2,6 @@
 #include <stdio.h>
 #include <pthread.h>
 
-int imprimir_matriz (int **matriz, int linhas, int colunas);
-int gerar_matriz(int **matriz, int linhas, int colunas, int valor);
-int **alocar_matriz (int linhas, int colunas);
-int multiplicar (int **mat_a, int **mat_b, int **mat_c, int linhas_1, int colunas_1, int linhas_2, int colunas_2, int numThreads);
 void* executaThread(void* param);
 
 typedef struct {
@@ -21,76 +17,18 @@ typedef struct {
 	int numThreads;
 } threadParams;
 
-int main(int argc, char **argv) {
-
-	int linhas_1;
-	int colunas_1;
-	int linhas_2;
-	int colunas_2;
-	int **matriz_1;
-	int **matriz_2;
-	int **matriz_3;
-	int numThreads;
-	
-
-	printf("Informe o número de linhas da matriz 1:\n");
-	scanf("%d",&linhas_1);
-
-	printf("Informe o número de colunas da matriz 1:\n");
-	scanf("%d",&colunas_1);
-	
-	printf("Informe o número de linhas da matriz 2:\n");
-	scanf("%d",&linhas_2);
-
-	if(linhas_2 != colunas_1) {
-		printf("O numero de colunas da matriz 1 deve ser igual ao número de linhas da matriz 2\n");
-		return 0;
-	}
-
-	printf("Informe o número de colunas da matriz 2:\n");
-	scanf("%d",&colunas_2);
-
-	printf("Informe o número de threads:\n");
-	scanf("%d",&numThreads);
-
-	if(numThreads > linhas_1) {
-		printf("O numero de threads não pode ser maior que o número de linhas da matriz 1\n");
-		return 0;
-	}
-
-	matriz_1 = alocar_matriz(linhas_1, colunas_1);
-	gerar_matriz(matriz_1,linhas_1,colunas_1,1);
-	imprimir_matriz(matriz_1, linhas_1, colunas_1);
-
-	printf(" x \n");
-
-	matriz_2 = alocar_matriz(linhas_2, colunas_2);
-	gerar_matriz(matriz_2,linhas_2,colunas_2,1);
-	imprimir_matriz(matriz_2, linhas_2, colunas_2);
-
-	printf(" = \n\n");
-
-	matriz_3 = alocar_matriz(linhas_1, colunas_2);
-	multiplicar(matriz_1,matriz_2,matriz_3, linhas_1, colunas_1, linhas_2, colunas_2,numThreads);
-	imprimir_matriz(matriz_3, linhas_1, colunas_2);
-	return 1;
+int zerar_matriz (int **matriz, int linha, int coluna){
+        return gerar_matriz(matriz,linha,coluna,0);
 }
 
-int gerar_matriz(int **matriz, int linhas, int colunas, int valor){
-	for(int i=0;i<linhas;i++) {
-		for(int j=0; j<colunas; j++) {
-			if(valor != 0) {
-				matriz[i][j] = rand()%100;
-			}else {
-				matriz[i][j] = 0;
-			}
-		}
-	}
 
-	return 0;
-}
-
-int zerar_matriz (int **mat, int l, int c){
+int gerar_matriz(int **matriz, int linha, int coluna, int valor){
+	for (int i=0; i < linha; i++)
+	  for (int j=0; j < coluna; j++)
+	        if (valor == -9999)
+				matriz[i][j] = rand() % 100;
+	        else
+				matriz[i][j] = valor;
 	return 0;
 }
 
@@ -114,8 +52,11 @@ int imprimir_matriz (int **matriz, int linhas, int colunas){
 	return 1; 
 }
 
-int **liberar_matriz (int **mat, int l, int c) {
-	return 0; 	 
+int **liberar_matriz (int **matriz, int linha, int coluna) {
+    for (int i =0; i < linha; i++)
+		free(matriz[i]);
+    free(matriz);
+    return NULL;
 }
 
 int **alocar_matriz (int linhas, int colunas) {
@@ -156,6 +97,17 @@ int multiplicar (int **mat_a, int **mat_b, int **mat_c, int linhas_1, int coluna
 	}
 
 	return 0;  
+}
+
+int somar (int **mat_a, int **mat_b, int **mat_c, int N, int L, int M) {
+	// if ((N != M) || (N != L) || (L != M)) {
+	//      printf("ERRO: != NxMxL\n");
+	//      exit (1);
+	// }
+	for (int i=0; i < N; i++)
+	  for (int j=0; j < M; j++)
+		mat_c[i][j] = mat_a[i][j]+mat_b[i][j];
+  return 0;
 }
 
 void* executaThread(void* param) {
