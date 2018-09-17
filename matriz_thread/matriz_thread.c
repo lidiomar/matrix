@@ -119,7 +119,6 @@ void* executaThread(void* param) {
 		for(int j=0; j<colunas_2;j++) {
 			for(int k=0; k<colunas_1;k++) {
 				sum+= matriz_1[i][k] * matriz_2[k][j];
-				printf("ID: %d\n", id);
 			}
 			matriz_3[i][j] = sum;
 			sum = 0;

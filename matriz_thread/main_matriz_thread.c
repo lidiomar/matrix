@@ -70,7 +70,7 @@ int main(int argc, char **argv) {
     printf("Runtime: %f\n", end_time - start_time);
     fflush(stdout);*/
     //imprimir_matriz(mat_c, N, M);
-    for(int y=5;y<=50;y+=5) {
+    for(int y=2;y<=4;y++) {
         printf("Threads: %d\n", y);
         for(int i=0;i<10;i++) {
             start_time = wtime();

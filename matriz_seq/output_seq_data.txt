@@ -1,45 +1,44 @@
-Mac-mini-de-Lidiomar:matriz_seq fernandoMachado$ ,/main_matriz 100x100-mat1,map 100x100-mat2,map
-0,004047
-0,004250
-0,004516
-0,004988
-0,004550
-0,006828
-0,004147
-0,004106
-0,005800
-0,005258
-Mac-mini-de-Lidiomar:matriz_seq fernandoMachado$ ,/main_matriz 500x500-mat1,map 500x500-mat2,map
-0,820186
-0,832812
-0,849802
-0,822053
-0,824205
-0,822137
-0,823891
-0,823340
-0,839566
-0,810870
-Mac-mini-de-Lidiomar:matriz_seq fernandoMachado$ ,/main_matriz 1000x1000-mat1,map 1000x1000-mat2,map
-21,264460
-21,077632
-20,960595
-20,979443
-21,087305
-21,010082
-21,152690
-20,947565
-20,983623
-20,943498
-Mac-mini-de-Lidiomar:matriz_seq fernandoMachado$ ,/main_matriz 1500x1500-mat1,map 1500x1500-mat2,map
-50,582588
-51,408329
-61,591616
-51,594795
-53,818592
-54,359022
-57,416686
-52,575208
-52,345009
-54,540708
-Mac-mini-de-Lidiomar:matriz_seq fernandoMachado$ 
+Lidiomars-iMac:matriz_seq lidiomarfernandomachado$ ,/main_matriz 100x100-mat1,map 100x100-mat2,map
+0,004800
+0,004732
+0,004456
+0,004974
+0,004807
+0,004587
+0,004486
+0,004763
+0,004649
+0,004585
+Lidiomars-iMac:matriz_seq lidiomarfernandomachado$ ,/main_matriz 500x500-mat1,map 500x500-mat2,map
+0,838729
+0,821554
+0,825794
+0,827458
+0,829600
+0,825579
+0,821257
+0,825308
+0,823065
+0,826896
+Lidiomars-iMac:matriz_seq lidiomarfernandomachado$ ,/main_matriz 1000x1000-mat1,map 1000x1000-mat2,map
+12,734327
+12,529132
+12,574765
+12,542196
+12,487070
+12,533071
+12,528703
+12,520453
+12,586071
+12,556046
+Lidiomars-iMac:matriz_seq lidiomarfernandomachado$ ,/main_matriz 1500x1500-mat1,map 1500x1500-mat2,map
+35,316794
+35,299843
+35,295907
+35,277677
+35,345407
+36,014938
+35,227874
+35,409961
+39,933288
+39,943582
