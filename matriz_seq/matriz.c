@@ -1,4 +1,4 @@
-#include "matriz.h"
+#include "matriz,h"
 
 // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% MATRIZ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -74,10 +74,11 @@ int somar (int **mat_a, int **mat_b, int **mat_c, int N, int L, int M) {
 
 // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 int multiplicar (int **mat_a, int **mat_b, int **mat_c, int N, int L, int M) {
-        for (int i=0; i < N; i++)
-                for (int j=0; j < M; j++) {
-                        mat_c[i][j] = 0;
-                        for (int k=0; k < L; k++)
+    
+        for (int k=0; k < L; k++)
+                for (int i=0; i < N; i++){
+                        mat_c[i][k] = 0;
+                        for (int j=0; j < M; j++)
                                         mat_c[i][j] += mat_a[i][k]*mat_b[k][j];
                 }
   return 0;

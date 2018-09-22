@@ -114,7 +114,7 @@ void* executaThread(void* param) {
 	int colunas_2 = param_t->colunas_2;
 	int numThreads = param_t->numThreads;
 	int sum = 0;
-
+	
 	for(int i=id; i<linhas_1; i+= numThreads) {
 		for(int j=0; j<colunas_2;j++) {
 			for(int k=0; k<colunas_1;k++) {
@@ -124,6 +124,7 @@ void* executaThread(void* param) {
 			sum = 0;
 		}
 	}
+
 
 	return NULL;
 }
