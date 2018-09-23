@@ -28,6 +28,7 @@ int main(int argc, char **argv) {
 
 	printf("Matriz com linhas ordenadas (decrescente)\n");
 	imprimir_matriz(matriz_1, linhas_1, colunas_1);
+
 	matriz_1 = gera_transposta(matriz_1, linhas_1, colunas_1);
 
 	printf("Matriz transposta\n");
