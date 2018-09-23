@@ -58,8 +58,8 @@ void ordena_linhas_matriz3(int **matriz, int linhas, int colunas, int x, int y) 
 	int proxM;
 	
 	for(int j=colunas-1;j>=0;j--) {
-		l = 2;
-		m = 1;
+		l = x;
+		m = y;
 		for(int k=0;k<j;k++) {
 			proxM = m+1;
 			proxL = l;
@@ -72,7 +72,7 @@ void ordena_linhas_matriz3(int **matriz, int linhas, int colunas, int x, int y) 
 				}
 			}
 		
-			if(matriz[l][m] > matriz[proxL][proxM]) {
+			if(matriz[l][m] > matriz[proxL][proxM] && proxL >= l) {
 				int aux = matriz[l][m];
 				matriz[l][m] = matriz[proxL][proxM];
 				matriz[proxL][proxM] = aux;
@@ -82,35 +82,29 @@ void ordena_linhas_matriz3(int **matriz, int linhas, int colunas, int x, int y) 
 			m = proxM;
 		}	
 	}
-			
-	
 }
 
 void ordena_linhas_matriz(int **matriz, int linhas, int colunas) {
 	int l = 0;
 	int m = 0;
+	for(int y=0; y<linhas;y++) 
+		for(int w=0;w<colunas;w++) {
+			m = w;
+			for(int i=0;i<linhas;i++) {
+				ordena_linhas_matriz3(matriz, linhas, colunas, i, w);
+				m = m + colunas;
+				if(m >=colunas) {
+					m = 0;
+					l = l+1;
 
-	for(int w=0;w<colunas;w++) {
-		m = w;
-		
-		for(int i=0;i<linhas;i++) {
-				
-			printf("[%d][%d]\n",i, w);
-			ordena_linhas_matriz3(matriz, linhas, colunas, i, w);
-
-			m = m + colunas;
-			if(m >=colunas) {
-				m = 0;
-				l = l+1;
-
-				if(l >= linhas) {
-					l = 0;
+					if(l >= linhas) {
+						l = 0;
+					}
 				}
+				
 			}
 			
 		}
-		
-	}
 }
 
 
