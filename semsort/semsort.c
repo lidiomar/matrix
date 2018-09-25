@@ -1,18 +1,20 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <time.h>
+#include <sys/time.h>
 
 int gerar_matriz(int **matriz, int linhas, int colunas, int valor);
 int imprimir_matriz (int **matriz, int linhas, int colunas);
 int **alocar_matriz (int linhas, int colunas);
-void ordena_bloco(int **matriz, int l, int m, int linhas, int colunas);
-
-void ordena_linhas_matriz3(int **matriz, int linhas, int colunas, int x, int y);
-void ordena_linhas_matriz(int **matriz, int linhas, int colunas);
+void ordena_linhas_matriz(int **matriz, int linhas, int colunas, int x, int y);
+void ordena_matriz(int **matriz, int linhas, int colunas);
+double wtime();
 
 int main(int argc, char **argv) {
 	int linhas_1;
 	int colunas_1;
 	int **matriz_1;
+	double start_time, end_time;
 
 	printf("Informe o número de linhas da matriz:\n");
 	scanf("%d",&linhas_1);
@@ -22,36 +24,21 @@ int main(int argc, char **argv) {
 
 	matriz_1 = alocar_matriz(linhas_1, colunas_1);
 	gerar_matriz(matriz_1,linhas_1,colunas_1,1);
-	printf("Matriz original\n");
-	imprimir_matriz(matriz_1, linhas_1, colunas_1);
-	ordena_linhas_matriz(matriz_1, linhas_1, colunas_1);
-	printf("Matriz ordenada\n");
-	imprimir_matriz(matriz_1, linhas_1, colunas_1);
+	
+	start_time = wtime();
+	ordena_matriz(matriz_1, linhas_1, colunas_1);
+	end_time = wtime();
 
+	printf("Runtime: %f\n", end_time - start_time);
 }
 
-
-void ordena_linhas_matriz2(int **matriz, int linhas, int colunas) {
-	for(int i=0; i<colunas;i++) {
-		ordena_bloco(matriz, 0, i, linhas, colunas);
-	}
+double wtime() {
+   struct timeval t;
+   gettimeofday(&t, NULL);
+   return t.tv_sec + (double) t.tv_usec / 1000000;
 }
 
-void ordena_bloco(int **matriz, int l, int m, int linhas, int colunas) {
-	for(int j=0;j<colunas;j++) {
-		printf("[%d][%d] -> [%d]\n",l, m, matriz[l][m] );
-		m++;
-		if(m >=colunas) {
-			m = 0;
-			l = l+1;
-
-			if(l >= linhas) {
-				l = 0;
-			}
-		}
-	}
-}
-void ordena_linhas_matriz3(int **matriz, int linhas, int colunas, int x, int y) {
+void ordena_linhas_matriz(int **matriz, int linhas, int colunas, int x, int y) {
 	int l;
 	int m;
 	int proxL;
@@ -84,27 +71,14 @@ void ordena_linhas_matriz3(int **matriz, int linhas, int colunas, int x, int y) 
 	}
 }
 
-void ordena_linhas_matriz(int **matriz, int linhas, int colunas) {
-	int l = 0;
-	int m = 0;
-	for(int y=0; y<linhas;y++) 
+void ordena_matriz(int **matriz, int linhas, int colunas) {
+	for(int y=0; y<linhas;y++){ 
 		for(int w=0;w<colunas;w++) {
-			m = w;
 			for(int i=0;i<linhas;i++) {
-				ordena_linhas_matriz3(matriz, linhas, colunas, i, w);
-				m = m + colunas;
-				if(m >=colunas) {
-					m = 0;
-					l = l+1;
-
-					if(l >= linhas) {
-						l = 0;
-					}
-				}
-				
+				ordena_linhas_matriz(matriz, linhas, colunas, i, w);
 			}
-			
 		}
+	}
 }
 
 
