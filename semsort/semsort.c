@@ -16,20 +16,23 @@ int main(int argc, char **argv) {
 	int **matriz_1;
 	double start_time, end_time;
 
-	printf("Informe o número de linhas da matriz:\n");
-	scanf("%d",&linhas_1);
-
-	printf("Informe o número de colunas da matriz:\n");
-	scanf("%d",&colunas_1);
-
-	matriz_1 = alocar_matriz(linhas_1, colunas_1);
-	gerar_matriz(matriz_1,linhas_1,colunas_1,1);
 	
-	start_time = wtime();
-	ordena_matriz(matriz_1, linhas_1, colunas_1);
-	end_time = wtime();
+	
+	for(int j=100;j<=500;j+=100) {
+	
+		for(int i=0; i<10;i++) {
 
-	printf("Runtime: %f\n", end_time - start_time);
+			matriz_1 = alocar_matriz(j, j);
+			gerar_matriz(matriz_1,j,j,1);
+
+			start_time = wtime();
+			ordena_matriz(matriz_1, j, j);
+			end_time = wtime();
+
+			printf("Runtime: %f\n", end_time - start_time);
+		}
+	}
+	
 }
 
 double wtime() {

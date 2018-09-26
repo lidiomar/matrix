@@ -39,7 +39,6 @@ int main(int argc, char **argv) {
 	bla(matriz_1, linhas_1, colunas_1);
 	end_time = wtime();
 
-	imprimir_matriz(matriz_1, linhas_1, colunas_1);
 	printf("Runtime: %f\n", end_time - start_time);
 }
 
