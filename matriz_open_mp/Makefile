@@ -1,6 +1,6 @@
 # GNU Makefile
 
-CC = clang
+CC = gcc-8
 CCFLAGS = -Wall
 LDFLAGS =
 TARGET = main_matriz_thread gera_matriz matriz_map
@@ -9,16 +9,16 @@ EXE = ./gera_matriz
 all: $(TARGET)
 
 matriz_thread.o: matriz_thread.c
-	$(CC) $(CCFLAGS) -c matriz_thread.c -o matriz_thread.o
+	$(CC) $(CCFLAGS) matriz_thread.c -fopenmp -o matriz_thread.o
 
 tools.o: tools.c
 	$(CC) $(CCFLAGS) -c tools.c -o tools.o
 
 main_matriz_thread: main_matriz_thread.c matriz_thread.o tools.o
-	$(CC) $(CCFLAGS) matriz_thread.o tools.o main_matriz_thread.c -Xpreprocessor -fopenmp -o $@ $(LDFLAGS)
+	$(CC) $(CCFLAGS) matriz_thread.o tools.o main_matriz_thread.c -fopenmp -o $@ $(LDFLAGS)
 
 gera_matriz: matriz_thread.o tools.o gera_matriz.c
-	$(CC) $(CCFLAGS) matriz_thread.o tools.o gera_matriz.c -o $@ $(LDFLAGS)
+	$(CC) $(CCFLAGS) matriz_thread.o tools.o gera_matriz.c -fopenmp -o $@ $(LDFLAGS)
 
 matriz_map: gera_matriz
 	$(EXE) 3 3 > /dev/null

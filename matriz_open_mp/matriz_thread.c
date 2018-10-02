@@ -1,5 +1,6 @@
 #include "matriz_thread.h"
 #include <pthread.h>
+#include <omp.h>
 
 int zerar_matriz (int **matriz, int linha, int coluna){
 	return gerar_matriz(matriz,linha,coluna,0);
@@ -59,6 +60,7 @@ int multiplicar (int **matriz_1, int **matriz_2, int **matriz_3, int linhas_1, i
 
 	#pragma omp parallell reduction(+:sum)
 	{
+		printf("##################### %d\n", omp_get_thread_num());
 		for(int i=0; i<linhas_1; i++) {
 			for(int j=0; j<colunas_2;j++) {
 				for(int k=0; k<colunas_1;k++) {
