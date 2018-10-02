@@ -58,7 +58,7 @@ int **alocar_matriz (int linhas, int colunas) {
 int multiplicar (int **matriz_1, int **matriz_2, int **matriz_3, int linhas_1, int colunas_1, int linhas_2, int colunas_2, int numThreads) {
 	int sum = 0;
 
-	#pragma omp parallell reduction(+:sum)
+	#pragma omp parallel reduction(+:sum)
 	{
 		printf("##################### %d\n", omp_get_thread_num());
 		for(int i=0; i<linhas_1; i++) {
