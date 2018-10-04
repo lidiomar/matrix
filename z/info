@@ -1,0 +1,2 @@
+Mac-mini-de-Lidiomar:matriz_seq fernandoMachado$ gcc -c gera_matriz.c matriz.c tools.c 
+Mac-mini-de-Lidiomar:matriz_seq fernandoMachado$ gcc -o gera_matriz matriz.o tools.c

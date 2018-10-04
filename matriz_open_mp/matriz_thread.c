@@ -2,6 +2,21 @@
 #include <pthread.h>
 #include <omp.h>
 
+void* executaThread(void* param);
+
+typedef struct {
+	int id;
+	int** matriz_1;
+	int** matriz_2;
+	int** matriz_3;
+	int linhas_1;
+	int colunas_1;
+	int linhas_2;
+	int colunas_2;
+	int* result;
+	int numThreads;
+} threadParams;
+
 int zerar_matriz (int **matriz, int linha, int coluna){
 	return gerar_matriz(matriz,linha,coluna,0);
 }
@@ -55,12 +70,11 @@ int **alocar_matriz (int linhas, int colunas) {
 	return matriz;
 }
 
-int multiplicar (int **matriz_1, int **matriz_2, int **matriz_3, int linhas_1, int colunas_1, int linhas_2, int colunas_2, int numThreads) {
+int multiplicar_static (int **matriz_1, int **matriz_2, int **matriz_3, int linhas_1, int colunas_1, int linhas_2, int colunas_2, int numThreads) {
 	int sum = 0;
 
-	#pragma omp parallel reduction(+:sum)
+	#pragma omp parallel for num_threads(numThreads) reduction(+:sum)
 	{
-		printf("##################### %d\n", omp_get_thread_num());
 		for(int i=0; i<linhas_1; i++) {
 			for(int j=0; j<colunas_2;j++) {
 				for(int k=0; k<colunas_1;k++) {
@@ -72,6 +86,96 @@ int multiplicar (int **matriz_1, int **matriz_2, int **matriz_3, int linhas_1, i
 		}
 	}
 	return 0;  
+}
+
+int multiplicar_dynamic (int **matriz_1, int **matriz_2, int **matriz_3, int linhas_1, int colunas_1, int linhas_2, int colunas_2, int numThreads) {
+	int sum = 0;
+
+	#pragma omp parallel for schedule(dynamic) num_threads(numThreads) reduction(+:sum)
+	{
+		for(int i=0; i<linhas_1; i++) {
+			for(int j=0; j<colunas_2;j++) {
+				for(int k=0; k<colunas_1;k++) {
+					sum+= matriz_1[i][k] * matriz_2[k][j];
+				}
+				matriz_3[i][j] = sum;
+				sum = 0;
+			}
+		}
+	}
+	return 0;  
+}
+
+
+int multiplicar_thread (int **mat_a, int **mat_b, int **mat_c, int linhas_1, int colunas_1, int linhas_2, int colunas_2, int numThreads) {
+	pthread_t *threads;	
+	threads = malloc(numThreads * sizeof(pthread_t));
+
+	threadParams *params;
+	params = malloc(numThreads * sizeof(threadParams));
+
+	for(int i=0; i<numThreads; i++) {
+		
+		params[i].id = i;
+		params[i].matriz_1 = mat_a;
+		params[i].matriz_2 = mat_b;
+		params[i].matriz_3 = mat_c;
+		params[i].linhas_1 = linhas_1;
+		params[i].linhas_2 = linhas_2;
+		params[i].colunas_1 = colunas_1;
+		params[i].colunas_2 = colunas_2;
+		params[i].numThreads = numThreads;
+		
+		pthread_create(&threads[i], NULL, executaThread,(void*)&params[i]);
+	}
+
+	for (int i = 0; i < numThreads; i++){
+		pthread_join(threads[i], NULL);
+	}
+	free(threads);
+	free(params);
+	return 0;  
+}
+
+int multiplicar_sequencial (int **mat_a, int **mat_b, int **mat_c, int N, int L, int M) {
+    
+	for (int i=0; i < L; i++)
+		for (int j=0; j < N; j++){
+	        mat_c[i][j] = 0;
+	        for (int k=0; k < M; k++)
+				mat_c[i][j] += mat_a[i][k]*mat_b[k][j];
+		}
+  return 0;
+}
+
+void* executaThread(void* param) {
+	threadParams *param_t;
+	param_t = (threadParams*)param;
+
+	int id = param_t->id;
+	int **matriz_1 = param_t->matriz_1;
+	int **matriz_2 = param_t->matriz_2;
+	int **matriz_3 = param_t->matriz_3;
+
+	int linhas_1 = param_t->linhas_1;
+	int colunas_1 = param_t->linhas_2;
+	int linhas_2 = param_t->linhas_2;
+	int colunas_2 = param_t->colunas_2;
+	int numThreads = param_t->numThreads;
+	int sum = 0;
+	
+	for(int i=id; i<linhas_1; i+= numThreads) {
+		for(int j=0; j<colunas_2;j++) {
+			for(int k=0; k<colunas_1;k++) {
+				sum+= matriz_1[i][k] * matriz_2[k][j];
+			}
+			matriz_3[i][j] = sum;
+			sum = 0;
+		}
+	}
+
+
+	return NULL;
 }
 
 int somar (int **mat_a, int **mat_b, int **mat_c, int N, int L, int M) {
